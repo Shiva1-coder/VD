@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day Proposal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: red;
+        }
+        #sarcasticImage {
+            display: none;
+            margin-top: 30px;
+            max-width: 100%;  /* Make the image responsive */
+            height: auto;
+        }
+        #question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 18px;
+            border: 2px solid #ccc;
+            background-color: #f8f8f8;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:disabled {
+            background-color: #d3d3d3;
+            cursor: not-allowed;
+        }
+        #warningMessage {
+            font-size: 14px;
+            color: orange;
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="question">
+        <p>Will you be my Valentine?</p>
+        <button id="yesButton">Yes</button>
+        <button id="noButton">No</button>
+    </div>
+
+    <div id="warningMessage"></div>
+
+    <div id="message"></div>
+
+    <img id="sarcasticImage" src="https://example.com/sarcastic-image.jpg" alt="Sarcastic Image">
+
+    <script>
+        let noClickCount = 0;
+        const maxNoClicks = 5;
+        let finalResponseGiven = false;
+
+        const yesButton = document.getElementById('yesButton');
+        const noButton = document.getElementById('noButton');
+        const message = document.getElementById('message');
+        const sarcasticImage = document.getElementById('sarcasticImage');
+        const warningMessage = document.getElementById('warningMessage');
+
+        const messages = [
+            "Oh, okay... Maybe another time?",
+            "Not today, huh? Alright...",
+            "Guess it’s not meant to be!",
+            "Ouch... That hurt a little.",
+            "You're persistent! Fine, here’s a sarcastic image!"
+        ];
+
+        // Function to update the message and check for sarcastic image
+        function updateMessage() {
+            if (noClickCount < maxNoClicks) {
+                message.textContent = messages[noClickCount];  // Update the message
+            } else {
+                message.textContent = "You're relentless... Fine!";  // Final message
+                sarcasticImage.style.display = "none";  // Hide sarcastic image
+                noButton.disabled = true;  // Disable the "No" button
+                yesButton.disabled = true;  // Disable the "Yes" button
+                finalResponseGiven = true;  // Set flag to stop further interaction
+            }
+        }
+
+        // Function to reset the question and re-enable buttons after a delay
+        function askQuestion() {
+            setTimeout(() => {
+                if (!finalResponseGiven) {
+                    // Re-enable buttons only if final response hasn't been given
+                    yesButton.disabled = false;
+                    noButton.disabled = false;
+                    // Display the initial warning when the page loads
+                    if (noClickCount === 0) {
+                        warningMessage.textContent = "Psst... Don't look at the 'No' button! 😏";
+                    } else {
+                        warningMessage.textContent = "";
+                    }
+                }
+            }, 1000); // Delay the reset by 1 second for better UX
+        }
+
+        // Event listener for the 'Yes' button
+        yesButton.addEventListener('click', () => {
+            alert("Yay! Thank you! ❤️");
+            noClickCount = 0;  // Reset no click count
+            finalResponseGiven = true;  // Stop further responses
+            message.textContent = "Yay! Thank you! ❤️";  // Display the "Yes" response message
+            noButton.disabled = true;  // Disable the "No" button
+            yesButton.disabled = true;  // Disable the "Yes" button
+        });
+
+        // Event listener for the 'No' button
+        noButton.addEventListener('click', () => {
+            noClickCount++;  // Increase the "No" click count
+            updateMessage();  // Update the message based on the current click count
+            askQuestion();  // Ask again after 'No'
+            
+            // Temporarily disable the buttons to avoid multiple clicks at once
+            yesButton.disabled = true;
+            noButton.disabled = true;
+        });
+
+        // Call to start the question asking process
+        askQuestion();
+    </script>
+
+</body>
+</html>
